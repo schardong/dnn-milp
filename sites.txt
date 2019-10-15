@@ -1,0 +1,6 @@
+https://ibmdecisionoptimization.github.io/docplex-doc/#mathematical-programming-modeling-for-python-using-docplex-mp-docplex-mp
+https://ibmdecisionoptimization.github.io/docplex-doc/mp/creating_model.html
+https://www.ibm.com/support/knowledgecenter/en/SSSA5P_12.9.0/com.ibm.docplex.help/DOcplex/topics/DOcplex_examples.html
+https://github.com/IBMDecisionOptimization/docplex-examples/blob/master/examples/mp/jupyter/tutorials/Linear_Programming.ipynb
+https://github.com/IBMDecisionOptimization/docplex-examples/blob/master/examples/mp/jupyter/tutorials/Beyond_Linear_Programming.ipynb
+https://www.ibm.com/support/knowledgecenter/SSSA5P_12.7.0/ilog.odms.cplex.help/CPLEX/GettingStarted/topics/set_up/Python_setup.html
