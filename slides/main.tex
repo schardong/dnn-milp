@@ -22,6 +22,8 @@
 \definecolor{processblue}{cmyk}{0.96,0,0,0}
 \definecolor{lightgray}{gray}{0.95}
 
+\newcommand{\UNIT}{\texttt{UNIT}$(j,k)$}
+
 
 \title[DNN and MILP]{Deep neural networks and mixed integer linear optimization}
 \author{Mateo Fischetti, Jason Jo}
@@ -43,10 +45,7 @@
   \begin{itemize}
   \item Deep Neural Networks (DNN) are composed of layers of neurons
   \item Each neuron calculates an affine combination of the outputs of the previous layer;
-  \item Finally, each neuron applies a non-linear operator on the result and feeds it to the next layer
-    \begin{itemize}
-    \item A common operator is the ReLU function
-    \end{itemize}
+  \item After combining the outputs, each neuron applies a non-linear operator on the result and feeds it to the next layer
   \end{itemize}
 \end{frame}
 
@@ -56,25 +55,22 @@
   \item A DNN is composed of $K+1$ layers, numbered $0$ to $K$
     \begin{itemize}
     \item Layer $0$ is a ``fake'' layer, and consists of the input of the network
-    \item Layer $N$ is the output of the network
+    \item Layer $K$ is the output of the network
     \end{itemize}
-  \item Each layer $k$ is composed of $n_k$ neurons (or units), numbered from $1$ to $n_k$
+  \item Each layer $k \in [0, K]$ is composed of $n_k$ neurons (or units), numbered from $1$ to $n_k$
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Definitions}
   \begin{itemize}
-  \item Let $x_k \in \mathbb{R}^{n_k}$ be the output vector of layer $k$, and $x^j_k$ is the scalar output of \texttt{UNIT}$(j,k)$
-  \item For each layer $k \geq 1$, \texttt{UNIT}$(j,k)$ computes its output vector using the following formula:
+  \item Let $x_k \in \mathbb{R}^{n_k}$ be the output vector of layer $k$, and $x_j^k$ is the scalar output of \UNIT
+  \item For each layer $k \geq 1$, \UNIT computes its output using the following formula:
   \end{itemize}
   $$
   x^k = \sigma(W^{k-1} x^{k-1} + b^{k-1})
   $$
   \begin{itemize}
   \item where $\sigma(.)$ is a non-linear function, $W^{k-1}$ and $b^{k-1}$ are a matrix of weights and a vector of activation biases
-    \begin{itemize}
-    \item One possible operator is the ReLU~(rectified linear unit) function
-    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -106,12 +102,12 @@
   {x,y}{\sum_{k=0}^K \sum_{j=1}^{n_k} c_j^k x_j^k  + \displaystyle \sum_{k=1}^K \sum_{j=1}^{n_k} \gamma_j^k z_j^k}{}{}
   \addConstraint{\sum_{i=1}^{n_{k-1}} w_{ij}^{k-1} x_i^{k-1} + b_j^{k-1}}{= x_k^j - s_j^k \label{relu-1}}
   \addConstraint{x_j^k, s_j^k}{\geq 0 \label{relu-2}}
-  \addConstraint{z_j^k}{\in \{0,1\} \label{relu-3}}
+  \addConstraint{z_j^k}{\in \{0,1\}\label{relu-3}}
   \addConstraint{z_j^k = 1 \rightarrow x_j^k}{\leq 0 \label{relu-4}}
-  \addConstraint{z_j^k = 0 \rightarrow s_j^k}{\leq 0 \label{relu-5}}
-  \addConstraint{lb_j^0 \leq x_j^0}{\leq ub_j^0}{, j = 1, \dots, n_0 \label{limits-xn0}}
+  \addConstraint{z_j^k = 0 \rightarrow s_j^k}{\leq 0}{\quad k = 1, \dots, K, j = 1, \dots, n_k \label{relu-5}}
+  \addConstraint{lb_j^0 \leq x_j^0}{\leq ub_j^0}{\quad j = 1, \dots, n_0 \label{limits-xn0}}
   \addConstraint{lb_j^k \leq x_j^k}{\leq ub_j^k \label{limits-xnk}}
-  \addConstraint{\overline{lb}_j^k \leq s_j^k}{\leq \overline{ub}_j^k \label{limits-sn0}}
+  \addConstraint{\overline{lb}_j^k \leq s_j^k}{\leq \overline{ub}_j^k}{\quad j = 1, \dots, n_k \label{limits-snk}}
   \end{mini!}
 \end{frame}
 
@@ -120,13 +116,21 @@
   \item All weights $w_{ij}^{k-1}$ and biases $b_j^{k-1}$ are calculated at the training stage
   \item The objective function costs $c_j^k$ and $\gamma_j^k$ are defined according to the problem
   \item Conditions~\ref{relu-1},~\ref{relu-2},~\ref{relu-3},~\ref{relu-4}, and~\ref{relu-5} define the ReLU output for each neuron
-  \item Conditions~\ref{limits-xn0},~\ref{limits-xnk}, and~\ref{limits-snk} are known upper and lower bounds for $x$ and $s$
+  \item Conditions~\ref{limits-xn0},~\ref{limits-xnk}, and~\ref{limits-snk} are known bounds for $x$ and $s$
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Model discussion}
+\begin{frame}{Model discussion - bound tightening}
   \begin{itemize}
-  \item BLA
+  \item Bound tightening for $x$ and $s$ seriously improve the practical resolution of the model
+  \item Modern MILP solvers define reasonable bounds for layer $0$ and propagate to layers $1 \dots K$
+  \item A better option would be:
+    \begin{enumerate}
+    \item Scan the neurons of all hidden layers
+    \item For each \UNIT, remove all constraints and variables from units on the same and subsequent layers
+    \item Solve the resulting model twice: one to maximize $x_j^k$, other to maximize $s_j^k$
+    \item The resulting optimal values can be used as bounds for $x_j^k$, and $s_j^k$
+    \end{enumerate}
   \end{itemize}
 \end{frame}
 
