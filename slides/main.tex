@@ -8,6 +8,7 @@
 
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage[short]{optidef}
 \usepackage{tkz-graph}
 \GraphInit[vstyle = Shade]
 \tikzset{
@@ -101,6 +102,20 @@
 
 \begin{frame}{Problem}
   ReLU $ \rightarrow $ not a linear function
+\end{frame}
+
+\begin{frame}{Model}
+  \begin{mini}
+  {x,y}{\sum_{k=0}^K \sum_{j=1}^{n_k} c_j^k x_j^k  + \displaystyle \sum_{k=1}^K \sum_{j=1}^{n_k} \gamma_j^k z_j^k}{}{}
+  \addConstraint{\sum_{i=1}^{n_{k-1}} w_{ij}^{k-1} x_i^{k-1} + b_j^{k-1} }{= x_k^j - s_j^k}
+  \addConstraint{x_j^k, s_j^k}{\geq 0}
+  \addConstraint{z_j^k}{\in \{0,1\}}
+  \addConstraint{z_j^k = 1 \rightarrow x_j^k}{\leq 0}
+  \addConstraint{z_j^k = 0 \rightarrow s_j^k}{\leq 0}
+  \addConstraint{lb_j^0 \leq x_j^0}{\leq ub_j^0}
+  \addConstraint{lb_j^k \leq x_j^k}{\leq ub_j^k}
+  \addConstraint{\overline{lb}_j^k \leq s_j^k}{\leq \overline{ub}_j^k}
+  \end{mini}
 \end{frame}
 
 \begin{frame}
