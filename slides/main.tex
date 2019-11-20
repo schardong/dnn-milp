@@ -120,6 +120,13 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Model discussion - feasibility}
+  \begin{itemize}
+  \item If the input is fixed (i.e. $lb_j^0 = ub_j^0, \forall j \in [1, n_0]$), all other variables have one possible value
+  \item The binary variables $z_j^k$ are also defined uniquely, with a degenerate case when the ReLU unit receives a $0$ as input
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{Model discussion - bound tightening}
   \begin{itemize}
   \item Bound tightening for $x$ and $s$ seriously improve the practical resolution of the model
