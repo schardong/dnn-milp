@@ -61,6 +61,14 @@
   \end{itemize}
 \end{frame}
 
+\section{Definitions}
+\begin{frame}{Definitions}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{dnn.png}
+  \end{figure}
+\end{frame}
+
 \begin{frame}{Definitions}
   \begin{itemize}
   \item Let $x_k \in \mathbb{R}^{n_k}$ be the output vector of layer $k$, and $x_j^k$ is the scalar output of \UNIT
@@ -134,7 +142,7 @@
   \item Modern MILP solvers define reasonable bounds for layer $0$ and propagate to layers $1 \dots K$
   \item A better option would be:
     \begin{enumerate}
-    \item Scan the neurons of all hidden layers
+    \item Scan the units of all hidden layers
     \item For each \UNIT, remove all constraints and variables from units on the same and subsequent layers
     \item Solve the resulting model twice: one to maximize $x_j^k$, other to maximize $s_j^k$
     \item The resulting optimal values can be used as bounds for $x_j^k$, and $s_j^k$
