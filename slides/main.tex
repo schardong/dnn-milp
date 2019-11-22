@@ -7,6 +7,7 @@
 }
 
 \usepackage{graphicx}
+\graphicspath{{figs/}}
 \usepackage{booktabs}
 \usepackage[short]{optidef}
 \usepackage{tkz-graph}
@@ -64,21 +65,21 @@
 \section{Definitions}
 \begin{frame}{Definitions}
   \begin{figure}
-    \centering
-    \includegraphics[width=\columnwidth]{dnn.png}
+      \centering
+      \includegraphics[width=\columnwidth]{dnn.png}
   \end{figure}
 \end{frame}
 
 \begin{frame}{Definitions}
   \begin{itemize}
   \item Let $x_k \in \mathbb{R}^{n_k}$ be the output vector of layer $k$, and $x_j^k$ is the scalar output of \UNIT
-  \item For each layer $k \geq 1$, \UNIT computes its output using the following formula:
-  \end{itemize}
+  \item For each layer $k \geq 1$, \UNIT \  computes its output using the following formula:
+
   $$
   x^k = \sigma(W^{k-1} x^{k-1} + b^{k-1})
   $$
-  \begin{itemize}
-  \item where $\sigma(.)$ is a non-linear function, $W^{k-1}$ and $b^{k-1}$ are a matrix of weights and a vector of activation biases
+
+  where $\sigma(.)$ is a non-linear function, $W^{k-1}$ and $b^{k-1}$ are a matrix of weights and a vector of activation biases resp.
   \end{itemize}
 \end{frame}
 
@@ -119,15 +120,6 @@
   \end{mini!}
 \end{frame}
 
-\begin{frame}{Model}
-  \begin{itemize}
-  \item All weights $w_{ij}^{k-1}$ and biases $b_j^{k-1}$ are calculated at the training stage
-  \item The objective function costs $c_j^k$ and $\gamma_j^k$ are defined according to the problem
-  \item Conditions~\ref{relu-1},~\ref{relu-2},~\ref{relu-3},~\ref{relu-4}, and~\ref{relu-5} define the ReLU output for each neuron
-  \item Conditions~\ref{limits-xn0},~\ref{limits-xnk}, and~\ref{limits-snk} are known bounds for $x$ and $s$
-  \end{itemize}
-\end{frame}
-
 \begin{frame}{Model discussion - feasibility}
   \begin{itemize}
   \item If the input is fixed (i.e. $lb_j^0 = ub_j^0, \forall j \in [1, n_0]$), all other variables have one possible value
@@ -142,7 +134,7 @@
   \item Modern MILP solvers define reasonable bounds for layer $0$ and propagate to layers $1 \dots K$
   \item A better option would be:
     \begin{enumerate}
-    \item Scan the units of all hidden layers
+    \item Scan the neurons of all hidden layers
     \item For each \UNIT, remove all constraints and variables from units on the same and subsequent layers
     \item Solve the resulting model twice: one to maximize $x_j^k$, other to maximize $s_j^k$
     \item The resulting optimal values can be used as bounds for $x_j^k$, and $s_j^k$
@@ -151,14 +143,92 @@
 \end{frame}
 
 \section{Applications}
-\begin{frame}
+\begin{frame}{Applications}
   \begin{itemize}
-  \item This model is unsuitable for training $\rightarrow$ leads to overfitting
+  \item This model is unsuitable for training
+  \item More suited for applications where the weights are fixed, and one wants to compute the best-possible input example
+  \item Hence, overfitting the given DNN is actually a desired property
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Experimental setup}
+  \begin{itemize}
+  \item Input: 28 x 28 hand-written digit figure
+  \item 784 pixels normalized to gray-level [0, 1]
+  \item 3 hidden layers with (8, 8, 8) ReLUs
+  \item Last layer: 10 units to classify digits ``0'' to ``9''
+  \item Number of epochs: 50
+  \item Accuracy: 93.04\% on the test set
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Feature visualization}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Building adversarial examples}
+  \begin{itemize}
+  \item $$x_{d+1}^{K} \geq 1.2 x_{j+1}^{K},\ \ \ \ \ \ j \in \{0, ..., 9\ \} \backslash \{d \}$$
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \Huge{\centerline{Fin}}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.48\columnwidth]{0-free.png}
+    \includegraphics[width=0.48\columnwidth]{0-limited.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.48\columnwidth]{1-free.png}
+    \includegraphics[width=0.48\columnwidth]{1-limited.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.48\columnwidth]{5-free.png}
+    \includegraphics[width=0.48\columnwidth]{5-limited.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.48\columnwidth]{9-free.png}
+    \includegraphics[width=0.48\columnwidth]{9-limited.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Basic vs. tight bounds}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{tab-1.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Exact tight bounds vs. weaker bounds}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{tab-2.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Basic vs. weaker bounds}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{tab-3.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \Huge{\centerline{Thank you}}
 \end{frame}
 
 \end{document}
