@@ -62,7 +62,6 @@
   \end{itemize}
 \end{frame}
 
-\section{Definitions}
 \begin{frame}{Definitions}
   \begin{figure}
       \centering
@@ -106,10 +105,39 @@
   \end{figure}
 \end{frame}
 
+\section{Model}
+
+\begin{frame}
+    \begin{itemize}
+        \item It follows the basic scalar equation
+        $$x = ReLU(w^T y + b)$$
+        \item One can write the linear conditions
+        $$w^T y + b = x - s,\ \ x \geq 0,\ \ s \geq 0$$
+        to decouple the positive and negative  part of the ReLU input
+        \item And we could add the
+    bilinear condition $xs \leq 0$, making the solution unique.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+    \begin{itemize}
+        \item A second option is to introduce a binary activation variable $z$ and to impose the logical implications
+        $$z = 1 \rightarrow x \leq 0$$
+        $$z = 0 \rightarrow s \leq 0$$
+        $$z \in \{0,1\}$$
+        \item which are internally converted into proper linear inequalities of the type
+        $$x \leq M^+(1-z)$$
+        $$s \leq M^-z$$
+
+    \end{itemize}
+\end{frame}
+
+
 \begin{frame}{Model}
   \begin{mini!}
-  {x,y}{\sum_{k=0}^K \sum_{j=1}^{n_k} c_j^k x_j^k  + \displaystyle \sum_{k=1}^K \sum_{j=1}^{n_k} \gamma_j^k z_j^k}{}{}
-  \addConstraint{\sum_{i=1}^{n_{k-1}} w_{ij}^{k-1} x_i^{k-1} + b_j^{k-1}}{= x_k^j - s_j^k \label{relu-1}}
+  {x,z}{\sum_{k=0}^K \sum_{j=1}^{n_k} c_j^k x_j^k  + \displaystyle \sum_{k=1}^K \sum_{j=1}^{n_k} \gamma_j^k z_j^k}{}{}
+  \addConstraint{\sum_{i=1}^{n_{k-1}} w_{ij}^{k-1} x_i^{k-1} + b_j^{k-1}}{= x_j^k - s_j^k \label{relu-1}}
   \addConstraint{x_j^k, s_j^k}{\geq 0 \label{relu-2}}
   \addConstraint{z_j^k}{\in \{0,1\}\label{relu-3}}
   \addConstraint{z_j^k = 1 \rightarrow x_j^k}{\leq 0 \label{relu-4}}
@@ -164,13 +192,55 @@
 
 \begin{frame}{Feature visualization}
   \begin{itemize}
-  \item
+  \item We used our 0-1 MILP model to find input examples that maximize the activation $x_j^{k}$ of each \UNIT
+  \item For our simple DNN, each of the resulting models could be solved within 1 second when using the bound strengthening procedure (described in the previous section)
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Feature visualization}
+    \begin{itemize}
+        \item No nice visual pattern can be recognized (at least, for our DNN)
+    \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.9\columnwidth]{feature_visualization.png}
+  \end{figure}
+\end{frame}
+
+% \begin{frame}{Building adversarial examples}
+%   \begin{itemize}
+%   \item The problem here is to slightly modify a given DNN input so that to produce a wrong output
+%   \item We impose, in the final layer, that the activation of the required (wrong) digit is at least 20\% larger than any other activations
+
+%   $$x_{d+1}^{K} \geq 1.2 x_{j+1}^{K},\ \ \ \ \ \ j \in \{0, ..., 9 \} \backslash \{d \}$$
+%   \end{itemize}
+% \end{frame}
+
 \begin{frame}{Building adversarial examples}
   \begin{itemize}
-  \item $$x_{d+1}^{K} \geq 1.2 x_{j+1}^{K},\ \ \ \ \ \ j \in \{0, ..., 9\ \} \backslash \{d \}$$
+  \item The problem here is to slightly modify a given DNN input so that to produce a wrong output
+  \item We impose, in the final layer, that the activation of the required (wrong) digit is at least 20\% larger than any other activations
+  $$x_{d+1}^{K} \geq 1.2 x_{j+1}^{K},\ \ \ \ \ \ j \in \{0, ..., 9 \} \backslash \{d \}$$
+  \pause
+  \item Similar constraints can be imposed to the input figure (e.g. maximum number of changed pixels in the input figure, or a maximum deviation of each pixel)
+  $$-d_j \leq x_j^{0} - \widetilde{x_j^{0}} \leq d_j, \ \ d_j \geq 0, \ \ \ \ \mbox{for}\  j=1, ..., n_0$$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Experimental setup}
+  \begin{itemize}
+  \item DNN1 - three hidden layers with eight units each
+  \item DNN2 - six hidden layers with eight units each
+  \item DNN3 - four hidden layers with (20, 10, 8, 8) units
+  \item DNN4 - five hidden layers with (20, 10, 8, 8, 8) units
+  \item DNN5 - six hidden layers with (20, 10, 10, 10, 10) units
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Experimental setup}
+  \begin{itemize}
+  \item All networks were trained with $50$ epochs using Stochastic Gradient Descent
+  \item The test accuracy was in the 93\%-96\% range
   \end{itemize}
 \end{frame}
 
@@ -204,23 +274,6 @@
     \includegraphics[width=0.48\columnwidth]{9-free.png}
     \includegraphics[width=0.48\columnwidth]{9-limited.png}
   \end{figure}
-\end{frame}
-
-\begin{frame}{Experimental setup}
-  \begin{itemize}
-  \item DNN1 - three hidden layers with eight units each
-  \item DNN2 - six hidden layers with eight units each
-  \item DNN3 - four hidden layers with (20, 10, 8, 8) units
-  \item DNN4 - five hidden layers with (20, 10, 8, 8, 8) units
-  \item DNN5 - six hidden layers with (20, 10, 10, 10, 10) units
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Experimental setup}
-  \begin{itemize}
-  \item All networks were trained with $50$ epochs using Stochastic Gradient Descent
-  \item The test accuracy was in the 93\%-96\% range
-  \end{itemize}
 \end{frame}
 
 \begin{frame}{Basic vs. tight bounds}
