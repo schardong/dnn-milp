@@ -26,8 +26,9 @@
 \newcommand{\UNIT}{\texttt{UNIT}$(j,k)$}
 
 
-\title[DNN and MILP]{Deep neural networks and mixed integer linear optimization}
-\author{Mateo Fischetti, Jason Jo}
+\title[DNN and MILP]{Deep Neural Networks and Mixed Integer Linear Optimization}
+\author{Authors: Mateo Fischetti, Jason Jo \\
+Presented by: Guilherme Schardong, Luis Eduardo Craizer}
 \date{\today}
 
 \begin{document}
@@ -227,23 +228,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Experimental setup}
-  \begin{itemize}
-  \item DNN1 - three hidden layers with eight units each
-  \item DNN2 - six hidden layers with eight units each
-  \item DNN3 - four hidden layers with (20, 10, 8, 8) units
-  \item DNN4 - five hidden layers with (20, 10, 8, 8, 8) units
-  \item DNN5 - six hidden layers with (20, 10, 10, 10, 10) units
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Experimental setup}
-  \begin{itemize}
-  \item All networks were trained with $50$ epochs using Stochastic Gradient Descent
-  \item The test accuracy was in the 93\%-96\% range
-  \end{itemize}
-\end{frame}
-
+\section{Results}
 \begin{frame}
   \begin{figure}
     \centering
@@ -276,6 +261,23 @@
   \end{figure}
 \end{frame}
 
+\begin{frame}{Experimental setup}
+  \begin{itemize}
+  \item DNN1 - three hidden layers with eight units each
+  \item DNN2 - six hidden layers with eight units each
+  \item DNN3 - four hidden layers with (20, 10, 8, 8) units
+  \item DNN4 - five hidden layers with (20, 10, 8, 8, 8) units
+  \item DNN5 - six hidden layers with (20, 10, 10, 10, 10) units
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Experimental setup}
+  \begin{itemize}
+  \item All networks were trained with $50$ epochs using Stochastic Gradient Descent
+  \item The test accuracy was in the 93\%-96\% range
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{Basic vs. tight bounds}
   \begin{figure}
     \centering
@@ -295,6 +297,15 @@
     \centering
     \includegraphics[width=\columnwidth]{tab-3.png}
   \end{figure}
+\end{frame}
+
+\section{Conclusions}
+\begin{frame}{Conclusions}
+  \begin{itemize}
+  \item The formulation is good for constructing adversarial examples for trained DNNs
+  \item Computing times still too large for reasonably sized networks, i.e. (30, 20, 10, 10, 10, 8, 8, 8)
+  \item Future works: Extend to convolutional layers
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
